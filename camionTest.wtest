@@ -1,9 +1,105 @@
 import camion.*
+import camion2.*
 
-describe "group of test for camion" {
+describe "Tests camion y cosas" {
 
-  test "first test" {
-    assert.that(true)
-  }
+    test "paquete de ladrillos" {
+        paqueteDeLadrillos.prepararPaquete(50)
+        assert.equals(100, paqueteDeLadrillos.peso())
+        assert.equals(2, paqueteDeLadrillos.peligrosidad())
+    }
 
+    test "bateria antiaerea" {
+        bateriaAntiaerea.armarBateria()
+        assert.equals(300, bateriaAntiaerea.peso())
+        assert.equals(100, bateriaAntiaerea.peligrosidad())
+    }
+
+    test "contenedor portuario" {
+        paqueteDeLadrillos.prepararPaquete(20)
+        arenaAGranel.cargarArena(50)
+        contenedor.agregarCosa(paqueteDeLadrillos)
+        contenedor.agregarCosa(knightRider)
+        contenedor.agregarCosa(arenaAGranel)
+        assert.equals(690, contenedor.peso())
+        assert.equals(10, contenedor.peligrosidad())
+    }
+
+    test "embalaje de seguridad" {
+        residuosRadiactivos.cargarResiduos(30)
+        embalajeDeSeguridad.embalar(residuosRadiactivos)
+        assert.equals(30, embalajeDeSeguridad.peso())
+        assert.equals(100, embalajeDeSeguridad.peligrosidad())
+    }
+
+    test "camion cargado completo" {
+        bumblebee.transformar()
+        arenaAGranel.cargarArena(150)
+        bateriaAntiaerea.armarBateria()
+        paqueteDeLadrillos.prepararPaquete(80)
+        embalajeDeSeguridad.embalar(paqueteDeLadrillos)
+
+        camion.agregarCarga(bumblebee)
+        camion.agregarCarga(arenaAGranel)
+        camion.agregarCarga(bateriaAntiaerea)
+        camion.agregarCarga(embalajeDeSeguridad)
+
+        assert.equals(2410, camion.tara())
+        assert.that(camion.cargaPar())
+        assert.that(camion.hayCargaDePeso(300))
+        assert.equals(bateriaAntiaerea, camion.primerObjetoPeligroso(100))
+
+        assert.equals([bateriaAntiaerea],camion.cargasPeligrosas(50))
+
+        assert.notThat(camion.estaExcedido())
+        assert.that(camion.puedeCircular(150))
+        assert.that(camion.puedeCircular(50))
+        assert.that(camion.hayCargaEntre(100, 350))
+        assert.equals(bumblebee,camion.indicarCargaMasPesada())
+    }
+}
+// PENSADO PARA CAMION2
+test "bumblebee cambia a robot al cargarlo" {
+
+    // comienza transformado en auto
+    assert.equals(15, bumblebee.peligrosidad())
+    camion.agregarCarga(bumblebee)
+    // al cargarse pasa a robot
+    assert.equals(30, bumblebee.peligrosidad())
+}
+
+test "arena a granel pierde 10 kilos al cargarla" {
+    arenaAGranel.cargarArena(100)
+    camion.agregarCarga(arenaAGranel)
+    assert.equals(90, arenaAGranel.peso())
+}
+
+test "paquete de ladrillos agrega 12 ladrillos" {
+    paqueteDeLadrillos.prepararPaquete(100)
+    camion.agregarCarga(paqueteDeLadrillos)
+    // 112 ladrillos
+    assert.equals(224, paqueteDeLadrillos.peso())
+    // pasa a 2 bultos
+    assert.equals(2, paqueteDeLadrillos.bulto())
+}
+
+test "bateria antiaerea se carga automaticamente" {
+    bateriaAntiaerea.desarmarBateria()
+    camion.agregarCarga(bateriaAntiaerea)
+    assert.equals(300, bateriaAntiaerea.peso())
+    assert.equals(100, bateriaAntiaerea.peligrosidad())
+}
+
+test "residuos radioactivos aumentan 15 kilos" {
+    residuosRadiactivos.cargarResiduos(20)
+    camion.agregarCarga(residuosRadiactivos)
+    assert.equals(35, residuosRadiactivos.peso())
+}
+
+test "contenedor hace reaccionar a lo que tiene dentro" {
+    arenaAGranel.cargarArena(100)
+    contenedor.agregarCosa(arenaAGranel)
+    camion.agregarCarga(contenedor)
+    // la arena pierde 10
+    assert.equals(90, arenaAGranel.peso())
 }
